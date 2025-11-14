@@ -1,0 +1,59 @@
+body {
+	background: #3F5EFB;
+	background: radial-gradient(circle, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%);
+}
+h1 {
+	font-family: 'Waiting for the Sunrise', cursive; 
+	font-size:30px; 
+	letter-spacing: 6px; 
+	font-weight: bold;
+}
+
+#content {
+	max-width: 800px;
+	width: 90%;
+	margin: auto;
+	position: relative;
+}
+
+#gift {
+	text-align: center;
+}
+
+#gift>img {
+	width: 50%;
+	margin: auto;
+	display: block;
+}
+
+#gift>img:hover {
+	box-shadow: 0 0 100px greenyellow;
+}
+
+#pswd {
+	background-color: rgba(0,0,0,0.5);
+	padding: 40px;
+	border-radius: 20px;
+	position: absolute;
+	top: 5%;
+	left: 0px;
+	right: 0;
+	height: 90%;
+	text-align: center;
+}
+
+#pswd input {
+	border: 10px black;
+	border-bottom-width: 10px;
+	border-bottom-style: none;
+	border-bottom-color: black;
+	outline: none;
+	padding: 5px;
+
+	font-size: 16px;
+	border-bottom: 5px solid #e7497b;
+	background-color: rgba(231, 73, 123,0.2);
+	border-radius: 10px;
+
+	color: white;
+}
