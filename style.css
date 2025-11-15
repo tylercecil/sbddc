@@ -30,6 +30,14 @@ h1 {
 
 }
 
+@keyframes shake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(5px, 5px) rotate(1deg); }
+  50% { transform: translate(0, 0) rotate(0deg); }
+  75% { transform: translate(-5px, 5px) rotate(-1deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
 #content {
 	max-width: 800px;
 	width: 90%;
@@ -137,3 +145,35 @@ h1 {
 	animation-delay: 4s;
 }
 
+#reward {
+	color: #ee4876;
+	font-weight: bold;
+
+	animation-fill-mode: both;
+	animation-name: fadein;
+	animation-duration: 2.5s;
+	animation-delay: 2.5s;
+}
+
+#reward h1 {
+	animation-name: shake;
+	animation-duration: 1s;
+	animation-iteration-count: infinite;
+}
+
+
+
+#reward #side {
+	font-size: 28px;
+	letter-spacing: 3px;
+	width: 75%;
+	margin: auto;
+	padding: 20px;
+
+	color: #bd38b8;
+
+	animation-fill-mode: both;
+	animation-name: fadein;
+	animation-duration: 1s;
+	animation-delay: 3s;
+}

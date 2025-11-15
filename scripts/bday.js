@@ -31,7 +31,19 @@ const pswdHTML = `<div id="pswd" class="box">
 <p>How do I know you are THE Award Winning Girlfriend?</p>
 </div>
 </div>
+`
 
+const rewardHTML = `
+<div id="reward" class="box">
+<h1>AND YOUR GIFT IS...</h1>
+
+<div id="side">
+OK OK! That's not your only gift. The last bit of your gift can be
+found at:
+<br>
+SERTEBDAY.COM/&ltTheColorOfOurLove&gt
+</div>
+</div>
 `
 
 
@@ -83,8 +95,16 @@ function correctPswd() {
 	pswdbox.style.animationDirection = 'alternate';
 	pswdbox.style.animationIterationCount = "infinite";
 
-	pswd.animation = 'none';
+	pswd.style.animation = 'none';
 	pswd.offsetHeight;
+	pswd.style.animationName = 'fadein';
+	pswd.style.animationDuration = "2s";
+	pswd.style.animationDelay = "1s";
+	pswd.style.animationDirection = 'reverse';
+	pswd.style.animationFillMode = 'both';
+
+	pswd.addEventListener('transitioned', (event) => { pswd.remove(); });
+	content.insertAdjacentHTML('beforeend', rewardHTML)
 }
 
 var hintCounter = 0;
