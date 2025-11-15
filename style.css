@@ -1,12 +1,33 @@
 body {
 	background: #3F5EFB;
 	background: radial-gradient(circle, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%);
+
+	font-family: 'Waiting for the Sunrise', cursive; 
+	font-size:40px; 
+	letter-spacing: 6px; 
 }
 h1 {
 	font-family: 'Waiting for the Sunrise', cursive; 
-	font-size:30px; 
+	font-size:60px; 
 	letter-spacing: 6px; 
 	font-weight: bold;
+}
+
+@keyframes fadein {
+	0% {   opacity: 0; }
+	100% { opacity: 100; }
+}
+
+@keyframes wronginput {
+	0% {background-color: rgba(231, 73, 123,0.2);}
+	100% {background-color: rgba(255, 39, 39,0.3);}
+
+}
+
+@keyframes correctinput {
+	0% {background-color: rgba(231, 73, 123,0.2);}
+	100% {background-color: rgba(39, 255, 39,0.3);}
+
 }
 
 #content {
@@ -20,17 +41,33 @@ h1 {
 	text-align: center;
 }
 
-#gift>img {
+#header h1 {
+}
+
+#header p {
+	animation-fill-mode: both;
+	animation-name: fadein;
+	animation-duration: 3s;
+	animation-delay: 1s;
+}
+
+
+#gift img {
 	width: 50%;
 	margin: auto;
 	display: block;
+
+	animation-fill-mode: both;
+	animation-name: fadein;
+	animation-duration: 2s;
+	animation-delay: 4s;
 }
 
-#gift>img:hover {
+#gift img:hover {
 	box-shadow: 0 0 100px greenyellow;
 }
 
-#pswd {
+.box {
 	background-color: rgba(0,0,0,0.5);
 	padding: 40px;
 	border-radius: 20px;
@@ -38,8 +75,25 @@ h1 {
 	top: 5%;
 	left: 0px;
 	right: 0;
-	height: 90%;
+	height: 80%;
 	text-align: center;
+}
+
+#pswd {
+	color: #ee4876;
+	font-weight: bold;
+
+	animation-fill-mode: both;
+	animation-name: fadein;
+	animation-duration: 1s;
+	animation-delay: 0s;
+}
+
+#pswd #prompt {
+	animation-fill-mode: both;
+	animation-name: fadein;
+	animation-duration: 1s;
+	animation-delay: 1s;
 }
 
 #pswd input {
@@ -50,10 +104,36 @@ h1 {
 	outline: none;
 	padding: 5px;
 
-	font-size: 16px;
+	text-align: center;
+	text-transform: uppercase;
+
+	font-family: 'Waiting for the Sunrise', cursive; 
+	letter-spacing: 10px; 
+	font-size: 40px;
 	border-bottom: 5px solid #e7497b;
 	background-color: rgba(231, 73, 123,0.2);
 	border-radius: 10px;
 
 	color: white;
+
+	animation-fill-mode: both;
+	animation-name: fadein;
+	animation-duration: 1s;
+	animation-delay: 2s;
 }
+
+#pswd #side {
+	font-size: 28px;
+	letter-spacing: 3px;
+	width: 75%;
+	margin: auto;
+	padding: 20px;
+
+	color: #bd38b8;
+
+	animation-fill-mode: both;
+	animation-name: fadein;
+	animation-duration: 0.5s;
+	animation-delay: 4s;
+}
+
