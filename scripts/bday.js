@@ -37,7 +37,17 @@ const rewardHTML = `
 <div id="reward" class="box">
 <h1>AND YOUR GIFT IS...</h1>
 
-<div id="side">
+<div id="tbell">
+<div id="giftcard">
+	<img id="tbell-card" src="../static/tbell.gif">
+	<h2>!!!A $20 TACO BELL GIFT CARD!!!</h2>
+</div>
+<div id="subtitle">
+	Fucking Sick! This is going to feed us for our whole roadtrip!!!
+</div>
+</div>
+
+<div id="final">
 OK OK! That's not your only gift. The last bit of your gift can be
 found at:
 <br>
