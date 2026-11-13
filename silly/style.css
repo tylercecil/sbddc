@@ -92,6 +92,65 @@ body {
   line-height: 1.5;
 }
 
+/* ---------- Answer box ---------- */
+
+#answer-form {
+  display: flex;
+  gap: 8px;
+  margin-top: 15vh;
+}
+
+#answer-form input,
+#answer-form button {
+  font: inherit;
+  font-size: 22px; /* 16px+ stops iOS from zooming in on focus */
+  padding: 10px 14px;
+  border: 2px solid var(--border-filled);
+  border-radius: 6px;
+  background: white;
+  color: var(--text);
+}
+
+#answer-form input { flex: 1; min-width: 0; }
+#answer-form button { font-weight: 700; cursor: pointer; }
+#answer-form :disabled { opacity: 0.5; cursor: default; }
+
+#answer-message {
+  min-height: 1.5em;
+  text-align: center;
+  font-weight: 700;
+}
+
+#answer-field { position: relative; flex: 1; min-width: 0; }
+#answer-input { width: 100%; text-transform: uppercase; }
+
+/* While checking, the input's own text is hidden and these letters sit on
+   top of it. answer.js copies the input's font and padding onto them. */
+#answer-letters {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  text-transform: uppercase;
+  white-space: pre;
+  pointer-events: none;
+}
+#answer-form.checking #answer-input { color: transparent; }
+#answer-form.checking #answer-letters { display: flex; }
+
+#answer-letters span { display: inline-block; }
+#answer-letters span.checked {
+  color: #d64545;
+  animation: answer-check var(--check-ms) ease-out;
+}
+@keyframes answer-check {
+  50% { transform: translateY(-25%) scale(1.15); }
+}
+#answer-letters.clear span {
+  opacity: 0;
+  transition: opacity 250ms;
+}
+
 /* ---------- Board ---------- */
 
 .board {
@@ -174,7 +233,8 @@ body {
 }
 
 /* Not enough letters / not a word. */
-.row.shake { animation: shake var(--shake-ms) ease-in-out; }
+.row.shake,
+#answer-form.shake { animation: shake var(--shake-ms) ease-in-out; }
 @keyframes shake {
   10%, 90% { transform: translateX(-2px); }
   20%, 80% { transform: translateX(4px); }

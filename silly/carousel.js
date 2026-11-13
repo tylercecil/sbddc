@@ -31,6 +31,7 @@ prevBtn.addEventListener("click", () => show(index - 1));
 nextBtn.addEventListener("click", () => show(index + 1));
 
 document.addEventListener("keydown", (e) => {
+  if (e.target.closest("[data-keep-arrows]")) return; // arrows move the cursor there
   if (e.key === "ArrowLeft") show(index - 1);
   if (e.key === "ArrowRight") show(index + 1);
 });

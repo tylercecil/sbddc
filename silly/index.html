@@ -32,7 +32,17 @@
       <section class="page" data-puzzle="4"></section>
 
       <section class="page text" id="answer">
-        <!-- Answer box goes here. -->
+        <form id="answer-form" autocomplete="off">
+          <div id="answer-field">
+            <input id="answer-input" type="text"
+                   autocapitalize="characters" autocorrect="off" spellcheck="false"
+                   enterkeyhint="go" data-keep-arrows aria-label="Your answer">
+            <!-- Copy of the guess, one span per letter, shown while it's "checked". -->
+            <div id="answer-letters" aria-hidden="true"></div>
+          </div>
+          <button type="submit">Go</button>
+        </form>
+        <p id="answer-message"></p>
       </section>
     </div>
   </div>
@@ -48,6 +58,7 @@
 
   <script src="words.js"></script>
   <script src="game.js"></script>
+  <script src="answer.js"></script>
   <script src="carousel.js"></script>
 </body>
 </html>
