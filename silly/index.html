@@ -29,13 +29,16 @@
   <!-- Pages, in order. data-puzzle="n" pages get PUZZLES[n-1] from game.js. -->
   <div id="viewport">
     <div id="pages">
-      <section class="page text">
-        <h1>Hello!</h1>
-        <p>There are four puzzles ahead. Each one hides a five-letter word.</p>
-        <p>Type a guess and press Enter. Green means right letter, right spot.
-           Yellow means right letter, wrong spot. Grey means not in the word.</p>
-        <p>Guess as many times as you like.</p>
-        <p>Swipe or use the arrows up top to move between pages.</p>
+      <section class="page text letter-page">
+        <div class="letter">
+          <h1>Hello!</h1>
+          <p>There are four puzzles ahead. Each one hides a five-letter word.</p>
+          <p>Type a guess and press Enter. Green means right letter, right spot.
+             Yellow means right letter, wrong spot. Grey means not in the word.</p>
+          <p>Guess as many times as you like.</p>
+          <p>Swipe or use the arrows up top to move between pages.</p>
+          <img class="letter-watermark" src="citizen.jpg" alt="">
+        </div>
       </section>
 
       <section class="page" data-puzzle="1"></section>
