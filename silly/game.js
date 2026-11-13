@@ -2,12 +2,14 @@
 // Puzzles
 // ============================================================
 // answer:        the correct word (uppercase, 5 letters)
-// specialColumn: 0-based column that always shows a wrong grade
+// specialColumn: column (1-5) that always shows a wrong grade
 // winMessage:    shown with the confetti
 const PUZZLES = [
-  { answer: "GOOSE", specialColumn: 4, winMessage: "HONK HONK!" },
+  { answer: "GOOSE", specialColumn: 5, winMessage: "HONK HONK!" },
 ];
-const PUZZLE = PUZZLES[0];
+
+// Answers always count as real words, even if words.js lacks them.
+PUZZLES.forEach((p) => WORDS.add(p.answer));
 
 // ============================================================
 // Timing (ms). Pushed into CSS variables so CSS and JS agree.
@@ -60,7 +62,8 @@ function lie(trueGrade) {
 
 function grade(guess, puzzle) {
   const grades = gradeHonest(guess, puzzle.answer);
-  grades[puzzle.specialColumn] = lie(grades[puzzle.specialColumn]);
+  const i = puzzle.specialColumn - 1;
+  grades[i] = lie(grades[i]);
   return grades;
 }
 
@@ -71,43 +74,11 @@ function grade(guess, puzzle) {
 function playSound(name) {}
 
 // ============================================================
-// Board
+// Animation helpers
 // ============================================================
-const board = document.getElementById("board");
 const typer = document.getElementById("typer");
 const toastEl = document.getElementById("toast");
 
-let row;          // the .row element currently being typed into
-let current = ""; // letters typed into that row
-let busy = false; // true while an animation runs; input is ignored
-let won = false;
-
-function addRow() {
-  row = document.createElement("div");
-  row.className = "row";
-  for (let i = 0; i < WORD_LENGTH; i++) {
-    const tile = document.createElement("div");
-    tile.className = "tile";
-    row.appendChild(tile);
-  }
-  board.appendChild(row);
-  row.scrollIntoView({ block: "center", behavior: "smooth" });
-}
-
-function tiles() {
-  return [...row.children];
-}
-
-function render() {
-  tiles().forEach((tile, i) => {
-    tile.textContent = current[i] || "";
-    tile.classList.toggle("filled", i < current.length);
-  });
-}
-
-// ============================================================
-// Animation helpers
-// ============================================================
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // Re-trigger a CSS animation class even if it's already applied.
@@ -125,120 +96,176 @@ function toast(message, ms = TIMING.toast) {
   if (ms) toastTimer = setTimeout(() => toastEl.classList.remove("show"), ms);
 }
 
-// ============================================================
-// Animations
-// ============================================================
-
-async function animateTooShort() {
-  playSound("shake");
-  replay(row, "shake");
-  await wait(TIMING.shake);
-  row.classList.remove("shake");
-}
-
-async function animateInvalid() {
-  toast("Not in word list");
-  playSound("shake");
-  replay(row, "shake");
-  await wait(TIMING.shake);
-  row.classList.remove("shake");
-
-  tiles().forEach((t) => t.classList.add("vanish"));
-  await wait(TIMING.vanish);
-  tiles().forEach((t) => t.classList.remove("vanish"));
-  setCurrent("");
-}
-
-// Each tile hops and flips in turn; its color appears mid-flip.
-async function animateReveal(grades) {
-  const ts = tiles();
-  for (let i = 0; i < ts.length; i++) {
-    const tile = ts[i];
-    playSound("flip");
-    replay(tile, "reveal");
-    setTimeout(() => (tile.dataset.state = grades[i]), TIMING.reveal / 2);
-    await wait(TIMING.revealStagger);
-  }
-  await wait(TIMING.reveal - TIMING.revealStagger);
-  ts.forEach((t) => t.classList.remove("reveal"));
-}
-
-async function animateWin() {
-  await animateReveal(Array(WORD_LENGTH).fill("correct"));
-
-  playSound("win");
-  tiles().forEach((tile, i) => {
-    tile.style.animationDelay = `${i * TIMING.flashStagger}ms`;
-    replay(tile, "win");
-  });
-  confetti();
-  toast(PUZZLE.winMessage, 0);
+function hideToast() {
+  clearTimeout(toastTimer);
+  toastEl.classList.remove("show");
 }
 
 // ============================================================
-// Input
+// One game = one board + one puzzle
 // ============================================================
+function createGame(board, puzzle) {
+  let row;          // the .row element currently being typed into
+  let current = ""; // letters typed into that row
+  let busy = false; // true while an animation runs; input is ignored
+  let won = false;
 
-function setCurrent(letters) {
-  const before = current.length;
-  current = letters;
-  typer.value = letters;
-  render();
-  if (current.length > before) {
-    playSound("type");
-    replay(tiles()[current.length - 1], "pop");
-  } else if (current.length < before) {
-    playSound("delete");
-  }
-}
-
-async function submit() {
-  if (busy || won) return;
-  busy = true;
-
-  const guess = current;
-  if (guess.length < WORD_LENGTH) {
-    await animateTooShort();
-  } else if (!WORDS.has(guess)) {
-    await animateInvalid();
-  } else if (guess === PUZZLE.answer) {
-    won = true;
-    typer.blur();
-    await animateWin();
-  } else {
-    await animateReveal(grade(guess, PUZZLE));
-    current = "";
-    typer.value = "";
-    addRow();
+  function addRow() {
+    row = document.createElement("div");
+    row.className = "row";
+    for (let i = 0; i < WORD_LENGTH; i++) {
+      const tile = document.createElement("div");
+      tile.className = "tile";
+      row.appendChild(tile);
+    }
+    board.appendChild(row);
+    // Center the new row in the board (the board is the scroll container).
+    const top = row.offsetTop - board.clientHeight / 2 + row.offsetHeight / 2;
+    board.scrollTo({ top, behavior: "smooth" });
   }
 
-  busy = false;
+  function tiles() {
+    return [...row.children];
+  }
+
+  function render() {
+    tiles().forEach((tile, i) => {
+      tile.textContent = current[i] || "";
+      tile.classList.toggle("filled", i < current.length);
+    });
+  }
+
+  // ---------- Animations ----------
+
+  async function animateTooShort() {
+    playSound("shake");
+    replay(row, "shake");
+    await wait(TIMING.shake);
+    row.classList.remove("shake");
+  }
+
+  async function animateInvalid() {
+    toast("Not in word list");
+    playSound("shake");
+    replay(row, "shake");
+    await wait(TIMING.shake);
+    row.classList.remove("shake");
+
+    tiles().forEach((t) => t.classList.add("vanish"));
+    await wait(TIMING.vanish);
+    tiles().forEach((t) => t.classList.remove("vanish"));
+    fill("");
+  }
+
+  // Each tile hops and flips in turn; its color appears mid-flip.
+  async function animateReveal(grades) {
+    const ts = tiles();
+    for (let i = 0; i < ts.length; i++) {
+      const tile = ts[i];
+      playSound("flip");
+      replay(tile, "reveal");
+      setTimeout(() => (tile.dataset.state = grades[i]), TIMING.reveal / 2);
+      await wait(TIMING.revealStagger);
+    }
+    await wait(TIMING.reveal - TIMING.revealStagger);
+    ts.forEach((t) => t.classList.remove("reveal"));
+  }
+
+  async function animateWin() {
+    await animateReveal(Array(WORD_LENGTH).fill("correct"));
+
+    playSound("win");
+    tiles().forEach((tile, i) => {
+      tile.style.animationDelay = `${i * TIMING.flashStagger}ms`;
+      replay(tile, "win");
+    });
+    confetti();
+    toast(puzzle.winMessage, 0);
+  }
+
+  // ---------- Input ----------
+
+  // Typing goes through here; ignored while animating or after a win.
+  function setLetters(letters) {
+    if (busy || won) {
+      typer.value = current;
+      return;
+    }
+    fill(letters);
+  }
+
+  function fill(letters) {
+    const before = current.length;
+    current = letters;
+    if (activeGame === game) typer.value = letters;
+    render();
+    if (current.length > before) {
+      playSound("type");
+      replay(tiles()[current.length - 1], "pop");
+    } else if (current.length < before) {
+      playSound("delete");
+    }
+  }
+
+  async function submit() {
+    if (busy || won) return;
+    busy = true;
+
+    const guess = current;
+    if (guess.length < WORD_LENGTH) {
+      await animateTooShort();
+    } else if (!WORDS.has(guess)) {
+      await animateInvalid();
+    } else if (guess === puzzle.answer) {
+      won = true;
+      typer.blur();
+      await animateWin();
+    } else {
+      await animateReveal(grade(guess, puzzle));
+      current = "";
+      if (activeGame === game) typer.value = "";
+      addRow();
+    }
+
+    busy = false;
+  }
+
+  addRow();
+  const game = {
+    puzzle,
+    setLetters,
+    submit,
+    letters: () => current,
+    isWon: () => won,
+  };
+  return game;
 }
+
+// The game currently receiving keystrokes (null on non-puzzle pages).
+let activeGame = null;
 
 // The hidden input is the source of truth for letters, so phone
 // keyboards (which often don't send useful keydown events) work.
 typer.addEventListener("input", () => {
-  if (busy || won) {
-    typer.value = current;
-    return;
-  }
+  if (!activeGame) return;
   const letters = typer.value.toUpperCase().replace(/[^A-Z]/g, "").slice(0, WORD_LENGTH);
-  setCurrent(letters);
+  activeGame.setLetters(letters);
 });
 
 typer.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     e.preventDefault();
-    submit();
+    activeGame?.submit();
   }
 });
 
 // Keep the input focused: tap anywhere on phones, any key on desktop.
+const wantsTyping = () => activeGame && !activeGame.isWon();
 document.addEventListener("click", () => {
-  if (!won) typer.focus();
+  if (wantsTyping()) typer.focus();
 });
 document.addEventListener("keydown", () => {
-  if (!won && document.activeElement !== typer) typer.focus();
+  if (wantsTyping() && document.activeElement !== typer) typer.focus();
 });
 
 // ============================================================
@@ -309,5 +336,5 @@ function confetti() {
 for (const [name, ms] of Object.entries(TIMING)) {
   document.documentElement.style.setProperty(`--${name}-ms`, `${ms}ms`);
 }
-addRow();
+activeGame = createGame(document.getElementById("board"), PUZZLES[0]);
 typer.focus();

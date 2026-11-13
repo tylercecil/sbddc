@@ -42,6 +42,7 @@ body {
   gap: var(--tile-gap);
   width: 100%;
   overflow-y: auto;
+  position: relative; /* so row.offsetTop is measured from the board */
   padding: 15vh 0 40vh; /* room to scroll the newest row away from the edges */
 }
 
