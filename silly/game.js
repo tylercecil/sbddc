@@ -71,10 +71,44 @@ function grade(guess, puzzle) {
 }
 
 // ============================================================
-// Sound (placeholder: called at every animation beat)
+// Sound
 // ============================================================
-// names: "type", "delete", "shake", "flip", "win"
-function playSound(name) {}
+// playSound is called at every animation beat with one of:
+// "type", "delete", "shake", "flip", "honk", "win".
+// Only names listed in SOUNDS make noise; each play picks one of the
+// listed files at random.
+const SOUNDS = {
+  honk: ["honk1.mp3", "honk2.mp3", "honk3.mp3", "honk4.mp3", "honk5.mp3"], // the special column's reveal
+};
+for (const name in SOUNDS) SOUNDS[name] = SOUNDS[name].map((file) => new Audio(file));
+
+function playSound(name) {
+  const options = SOUNDS[name];
+  if (!options) return;
+  const sound = options[Math.floor(Math.random() * options.length)];
+  sound.muted = false; // in case unlockSounds is still mid-play
+  sound.currentTime = 0;
+  sound.play().catch(() => {}); // a blocked sound shouldn't break the game
+}
+
+// Phones only allow sound that starts during a tap or keypress, and the
+// honk plays a moment after Enter. Playing each sound silently on the
+// first interaction unlocks it for later.
+function unlockSounds() {
+  for (const sound of Object.values(SOUNDS).flat()) {
+    sound.muted = true;
+    sound.play().then(() => {
+      if (sound.muted) sound.pause(); // unless playSound already took over
+      sound.muted = false;
+    }).catch(() => (sound.muted = false));
+  }
+  for (const type of ["click", "keydown", "input"]) {
+    document.removeEventListener(type, unlockSounds, true);
+  }
+}
+for (const type of ["click", "keydown", "input"]) {
+  document.addEventListener(type, unlockSounds, true);
+}
 
 // ============================================================
 // Animation helpers
@@ -165,7 +199,7 @@ function createGame(board, puzzle) {
     const ts = tiles();
     for (let i = 0; i < ts.length; i++) {
       const tile = ts[i];
-      playSound("flip");
+      playSound(i === puzzle.specialColumn - 1 ? "honk" : "flip");
       replay(tile, "reveal");
       setTimeout(() => (tile.dataset.state = grades[i]), TIMING.reveal / 2);
       await wait(TIMING.revealStagger);
