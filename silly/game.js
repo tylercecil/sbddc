@@ -310,6 +310,9 @@ document.addEventListener("keydown", () => {
 // ============================================================
 const CONFETTI = {
   count: 180,
+  emoji: "🪿",    // flies out alongside the paper confetti
+  emojiCount: 60,
+  emojiSize: 36,  // px, varies ±20%
   colors: ["#6aaa64", "#c9b458", "#e8635a", "#5a9be8", "#c45ae8", "#f5f5f5"],
   gravity: 0.25,
   drag: 0.985,
@@ -325,7 +328,9 @@ function confetti() {
   ctx.scale(dpr, dpr);
 
   // Two cannons in the bottom corners, aimed up and inward.
-  const pieces = Array.from({ length: CONFETTI.count }, (_, i) => {
+  const total = CONFETTI.count + CONFETTI.emojiCount;
+  const pieces = Array.from({ length: total }, (_, i) => {
+    const isEmoji = i >= CONFETTI.count;
     const fromLeft = i % 2 === 0;
     const angle = (fromLeft ? -60 : -120) * (Math.PI / 180) + (Math.random() - 0.5) * 0.6;
     const speed = 10 + Math.random() * 12;
@@ -334,10 +339,11 @@ function confetti() {
       y: innerHeight,
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed,
-      size: 6 + Math.random() * 6,
-      spin: Math.random() * Math.PI,
-      spinSpeed: (Math.random() - 0.5) * 0.3,
+      size: isEmoji ? CONFETTI.emojiSize * (0.8 + Math.random() * 0.4) : 6 + Math.random() * 6,
+      spin: isEmoji ? 0 : Math.random() * Math.PI,
+      spinSpeed: (Math.random() - 0.5) * (isEmoji ? 0.08 : 0.3),
       color: CONFETTI.colors[i % CONFETTI.colors.length],
+      emoji: isEmoji ? CONFETTI.emoji : null,
     };
   });
 
@@ -354,8 +360,15 @@ function confetti() {
       ctx.save();
       ctx.translate(p.x, p.y);
       ctx.rotate(p.spin);
-      ctx.fillStyle = p.color;
-      ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+      if (p.emoji) {
+        ctx.font = `${p.size}px sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(p.emoji, 0, 0);
+      } else {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+      }
       ctx.restore();
     }
     if (now - start < CONFETTI.durationMs) {
