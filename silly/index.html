@@ -8,7 +8,35 @@
 </head>
 
 <body>
-  <main id="board"></main>
+  <nav id="nav">
+    <button id="prev" aria-label="Previous page">&lsaquo;</button>
+    <span id="nav-label"></span>
+    <button id="next" aria-label="Next page">&rsaquo;</button>
+  </nav>
+
+  <!-- Pages, in order. data-puzzle="n" pages get PUZZLES[n-1] from game.js. -->
+  <div id="viewport">
+    <div id="pages">
+      <section class="page text">
+        <h1>Hello!</h1>
+        <p>There are four puzzles ahead. Each one hides a five-letter word.</p>
+        <p>Type a guess and press Enter. Green means right letter, right spot.
+           Yellow means right letter, wrong spot. Grey means not in the word.</p>
+        <p>Guess as many times as you like.</p>
+        <p>Swipe or use the arrows up top to move between pages.</p>
+      </section>
+
+      <section class="page" data-puzzle="1"></section>
+      <section class="page" data-puzzle="2"></section>
+      <section class="page" data-puzzle="3"></section>
+      <section class="page" data-puzzle="4"></section>
+
+      <section class="page text" id="answer">
+        <!-- Answer box goes here. -->
+      </section>
+    </div>
+  </div>
+
   <div id="toast"></div>
 
   <!-- Invisible input so phones open their keyboard. game.js keeps it focused. -->
@@ -20,5 +48,6 @@
 
   <script src="words.js"></script>
   <script src="game.js"></script>
+  <script src="carousel.js"></script>
 </body>
 </html>

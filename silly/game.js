@@ -6,6 +6,9 @@
 // winMessage:    shown with the confetti
 const PUZZLES = [
   { answer: "GOOSE", specialColumn: 5, winMessage: "HONK HONK!" },
+  { answer: "HONKS", specialColumn: 2, winMessage: "Nice!" },
+  { answer: "MARKS", specialColumn: 1, winMessage: "Nice!" },
+  { answer: "TRUTH", specialColumn: 2, winMessage: "Nice!" },
 ];
 
 // Answers always count as real words, even if words.js lacks them.
@@ -180,7 +183,7 @@ function createGame(board, puzzle) {
       replay(tile, "win");
     });
     confetti();
-    toast(puzzle.winMessage, 0);
+    if (activeGame === game) toast(puzzle.winMessage, 0);
   }
 
   // ---------- Input ----------
@@ -336,5 +339,29 @@ function confetti() {
 for (const [name, ms] of Object.entries(TIMING)) {
   document.documentElement.style.setProperty(`--${name}-ms`, `${ms}ms`);
 }
-activeGame = createGame(document.getElementById("board"), PUZZLES[0]);
-typer.focus();
+
+// Every <section data-puzzle="n"> gets its own board and game.
+const games = new Map();
+for (const page of document.querySelectorAll("[data-puzzle]")) {
+  const board = document.createElement("div");
+  board.className = "board";
+  page.appendChild(board);
+  games.set(page, createGame(board, PUZZLES[page.dataset.puzzle - 1]));
+}
+
+// carousel.js tells us which page is showing.
+document.addEventListener("pagechange", (e) => {
+  activeGame = games.get(e.detail.page) || null;
+  if (activeGame?.isWon()) {
+    toast(activeGame.puzzle.winMessage, 0);
+  } else {
+    hideToast();
+  }
+
+  if (wantsTyping()) {
+    typer.value = activeGame.letters();
+    typer.focus();
+  } else {
+    typer.blur();
+  }
+});
