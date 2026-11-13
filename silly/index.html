@@ -4,10 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
   <title>silly</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css?family=Waiting+for+the+Sunrise" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+  <!-- Roughens edges so tiles look hand-drawn. Used by .tile::before in style.css;
+       raise "scale" for wobblier lines. -->
+  <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+    <filter id="sketch">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="7" />
+      <feDisplacementMap in="SourceGraphic" scale="4" />
+    </filter>
+  </svg>
+
   <nav id="nav">
     <button id="prev" aria-label="Previous page">&lsaquo;</button>
     <span id="nav-label"></span>

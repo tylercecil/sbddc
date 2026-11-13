@@ -1,8 +1,9 @@
 :root {
   --bg: #fafaf7;
   --text: #1a1a1a;
-  --border-empty: #d3d6da;
-  --border-filled: #878a8c;
+  --border-empty: #c4bfb4;
+  --border-filled: #4a4740;
+  --font: 'Waiting for the Sunrise', cursive;
   --correct: #6aaa64;
   --present: #c9b458;
   --absent: #787c7e;
@@ -27,7 +28,7 @@ html, body {
   height: 100%;
   background: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -48,7 +49,7 @@ body {
   height: var(--nav-height);
   border-bottom: 1px solid var(--border-empty);
   font-weight: 700;
-  font-size: 18px;
+  font-size: 28px;
 }
 
 #nav button {
@@ -88,8 +89,9 @@ body {
   overflow-y: auto;
   max-width: 100%;
   padding: 24px max(24px, calc((100% - 560px) / 2));
-  font-size: 18px;
-  line-height: 1.5;
+  font-size: 26px;
+  line-height: 1.4;
+  letter-spacing: 1px;
 }
 
 /* ---------- Answer box ---------- */
@@ -103,7 +105,7 @@ body {
 #answer-form input,
 #answer-form button {
   font: inherit;
-  font-size: 22px; /* 16px+ stops iOS from zooming in on focus */
+  font-size: 28px; /* 16px+ stops iOS from zooming in on focus */
   padding: 10px 14px;
   border: 2px solid var(--border-filled);
   border-radius: 6px;
@@ -170,24 +172,49 @@ body {
 }
 
 .tile {
+  position: relative;
   width: var(--tile-size);
   height: var(--tile-size);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid var(--border-empty);
-  font-size: calc(var(--tile-size) * 0.55);
+  font-size: calc(var(--tile-size) * 0.75);
   font-weight: 700;
+  line-height: 1;
   text-transform: uppercase;
   user-select: none;
 }
 
-.tile.filled { border-color: var(--border-filled); }
+/* The tile's outline and fill, drawn wobbly by the #sketch SVG filter in
+   index.html. Kept on its own layer so the letter isn't distorted. */
+.tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 2.5px solid var(--border-empty);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  filter: url(#sketch);
+}
 
-.tile[data-state] { border-color: transparent; color: white; }
-.tile[data-state="correct"] { background: var(--correct); }
-.tile[data-state="present"] { background: var(--present); }
-.tile[data-state="absent"]  { background: var(--absent); }
+/* Each column is drawn a little differently. `rotate` stacks with the
+   transform animations below instead of being replaced by them. */
+.tile:nth-child(1) { rotate: -1deg; }
+.tile:nth-child(2) { rotate: 0.8deg; }
+.tile:nth-child(3) { rotate: -0.4deg; }
+.tile:nth-child(4) { rotate: 1.2deg; }
+.tile:nth-child(5) { rotate: -0.7deg; }
+.tile:nth-child(2)::before { border-radius: 15px 225px 15px 255px / 225px 15px 255px 15px; }
+.tile:nth-child(3)::before { border-radius: 225px 15px 255px 15px / 15px 255px 15px 225px; }
+.tile:nth-child(4)::before { border-radius: 15px 255px 15px 225px / 255px 15px 225px 15px; }
+.tile:nth-child(5)::before { border-radius: 255px 25px 225px 15px / 25px 225px 15px 255px; }
+
+.tile.filled::before { border-color: var(--border-filled); }
+
+.tile[data-state] { color: white; }
+.tile[data-state="correct"]::before { background: var(--correct); border-color: var(--correct); }
+.tile[data-state="present"]::before { background: var(--present); border-color: var(--present); }
+.tile[data-state="absent"]::before  { background: var(--absent);  border-color: var(--absent); }
 
 #typer {
   position: fixed;
@@ -210,6 +237,8 @@ body {
   background: var(--text);
   color: var(--bg);
   font-weight: 700;
+  font-size: 24px;
+  letter-spacing: 1px;
   opacity: 0;
   transition: opacity 200ms;
   pointer-events: none;
