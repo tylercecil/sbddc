@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
+  <title>silly</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <main id="board"></main>
+  <div id="toast"></div>
+
+  <!-- Invisible input so phones open their keyboard. game.js keeps it focused. -->
+  <input id="typer" type="text" maxlength="5"
+         autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"
+         enterkeyhint="go" aria-label="Type your guess">
+
+  <canvas id="confetti"></canvas>
+
+  <script src="words.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
