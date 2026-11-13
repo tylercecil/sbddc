@@ -241,3 +241,69 @@ h1 {
 
 	color: #bd38b8;
 }
+
+/* "Incoming message" animation for the almost-password (scripts/incoming.js).
+   Durations come from INCOMING in that file via --incoming-* variables. */
+#incoming {
+	position: fixed;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: black;
+	opacity: 0;
+	z-index: 100;
+}
+
+#incoming-box {
+	box-sizing: border-box;
+	width: min(90vw, 520px);
+	padding: 24px 28px 20px;
+	border: 3px solid #39ff14;
+	border-radius: 8px;
+	background: #050805;
+	box-shadow: 0 0 30px rgba(57, 255, 20, 0.35);
+	color: #39ff14;
+	font-family: "Courier New", monospace;
+	font-size: clamp(16px, 5vw, 32px);
+	font-weight: bold;
+	letter-spacing: 1px;
+	transform: scale(0);
+	opacity: 0;
+	transition: transform var(--incoming-openMs) ease-out, opacity var(--incoming-openMs) ease-out;
+}
+#incoming-box.open { transform: scale(1); opacity: 1; }
+
+#incoming-text {
+	white-space: pre-line;
+	min-height: 4.8em; /* room for all four lines so the box doesn't grow */
+	line-height: 1.2;
+}
+#incoming-text::after {
+	content: "\2588"; /* block cursor */
+	animation: incoming-cursor 0.8s steps(1) infinite;
+}
+#incoming-text.done::after { content: none; }
+
+@keyframes incoming-cursor {
+	50% { opacity: 0; }
+}
+
+#incoming-bar {
+	height: 10px;
+	margin-top: 20px;
+	border: 2px solid #39ff14;
+	border-radius: 3px;
+}
+#incoming-bar-fill {
+	width: 0;
+	height: 100%;
+	background: #39ff14;
+	transition: width var(--incoming-loadMs) linear;
+}
+#incoming-bar-fill.full { width: 100%; }
+
+body.fade-out {
+	opacity: 0;
+	transition: opacity var(--incoming-fadeMs) ease-in;
+}

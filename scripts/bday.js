@@ -155,24 +155,8 @@ function wrongPswd() {
 	hintCounter = (hintCounter + 1) % hints.length
 }
 
-function almostPswd() {
-	const prompt = document.getElementById("prompt");
-	const side = document.getElementById("side");
-	const pswdbox = document.getElementById("pswdBox");
-	// pswdbox.style.animationName = "wronginput";
-	// pswdbox.style.animationDuration = "0.2s";
-	// pswdbox.style.animationDelay = "0s";
-	// pswdbox.style.animationDirection = 'alternate';
-	// pswdbox.style.animationIterationCount = 10;
-	prompt.innerHTML = "OK, You're Technically Correct!"
-	side.style.animation = 'none';
-	side.offsetHeight;
-	side.style.animation = null;
-	side.style.animationDelay = "1s";
-	side.innerHTML = `You see... I was so rushed trying to make something 
-	to go out in the mail, that... the 4rth letter is off one space...<br>
-		But like... you know what it's SUPPOSED to say, right?
-		`
+async function almostPswd() {
+	document.getElementById("pswd").remove();
+	await playIncomingMessage(); // scripts/incoming.js
+	window.location.href = "silly/";
 }
-
-
