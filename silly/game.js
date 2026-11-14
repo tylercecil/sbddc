@@ -78,7 +78,7 @@ function grade(guess, puzzle) {
 // Only names listed in SOUNDS make noise; each play picks one of the
 // listed files at random.
 const SOUNDS = {
-  honk: ["honk1.mp3", "honk2.mp3", "honk3.mp3", "honk4.mp3", "honk5.mp3"], // the special column's reveal
+  honk: ["honk1.mp3", "honk2.mp3", "honk3.mp3", "honk4.mp3", "honk5.mp3", "honk6.mp3", "honk7.mp3", "honk8.mp3"], 
 };
 for (const name in SOUNDS) SOUNDS[name] = SOUNDS[name].map((file) => new Audio(file));
 
