@@ -114,6 +114,14 @@ for (const type of ["click", "keydown", "input"]) {
 // Animation helpers
 // ============================================================
 const typer = document.getElementById("typer");
+
+// Set the hidden input's text and keep the cursor at the end. Only for
+// when the game changes the letters; typing must not write the input,
+// because phone browsers move the cursor to the start when it's written.
+function setTyper(value) {
+  typer.value = value;
+  typer.setSelectionRange(value.length, value.length);
+}
 const toastEl = document.getElementById("toast");
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -192,6 +200,7 @@ function createGame(board, puzzle) {
     await wait(TIMING.vanish);
     tiles().forEach((t) => t.classList.remove("vanish"));
     fill("");
+    if (activeGame === game) setTyper("");
   }
 
   // Each tile hops and flips in turn; its color appears mid-flip.
@@ -225,7 +234,7 @@ function createGame(board, puzzle) {
   // Typing goes through here; ignored while animating or after a win.
   function setLetters(letters) {
     if (busy || won) {
-      typer.value = current;
+      setTyper(current);
       return;
     }
     fill(letters);
@@ -234,7 +243,6 @@ function createGame(board, puzzle) {
   function fill(letters) {
     const before = current.length;
     current = letters;
-    if (activeGame === game) typer.value = letters;
     render();
     if (current.length > before) {
       playSound("type");
@@ -260,7 +268,7 @@ function createGame(board, puzzle) {
     } else {
       await animateReveal(grade(guess, puzzle));
       current = "";
-      if (activeGame === game) typer.value = "";
+      if (activeGame === game) setTyper("");
       addRow();
     }
 
@@ -406,7 +414,7 @@ document.addEventListener("pagechange", (e) => {
   }
 
   if (wantsTyping()) {
-    typer.value = activeGame.letters();
+    setTyper(activeGame.letters());
     typer.focus();
   } else {
     typer.blur();
