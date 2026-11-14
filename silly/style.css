@@ -253,7 +253,8 @@ body {
   top: 0;
   left: 0;
   opacity: 0;
-  width: 1px;
+  width: 10em; /* room for the word: at 1px, Chrome drops letters and jumps the
+                  cursor to the start when a phone keyboard commits a word */
   height: 1px;
   font-size: 16px; /* stops iOS from zooming in on focus */
   pointer-events: none;

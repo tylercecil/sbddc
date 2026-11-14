@@ -297,6 +297,25 @@ typer.addEventListener("input", () => {
   activeGame.setLetters(letters);
 });
 
+// Letters are only ever added at the end, so the cursor must stay there.
+// Android can move it (e.g. to the start when the input is refocused),
+// which would put new letters in front.
+let composing = false; // phone keyboard is mid-word; leave its cursor alone
+typer.addEventListener("compositionstart", () => (composing = true));
+typer.addEventListener("compositionend", () => (composing = false));
+
+function keepCursorAtEnd() {
+  if (composing || document.activeElement !== typer) return;
+  const end = typer.value.length;
+  if (typer.selectionStart !== end || typer.selectionEnd !== end) {
+    typer.setSelectionRange(end, end);
+  }
+}
+for (const type of ["focus", "input", "selectionchange"]) {
+  typer.addEventListener(type, keepCursorAtEnd);
+}
+document.addEventListener("selectionchange", keepCursorAtEnd); // older Chrome fires it here
+
 typer.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     e.preventDefault();
