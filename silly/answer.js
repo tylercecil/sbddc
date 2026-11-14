@@ -16,10 +16,12 @@ const ANSWER = {
   },
   wrongMessages: [
     "Nope!",
-    "Not quite...",
-    "Try again!",
-    "Hmm, no.",
-    "Keep thinking!",
+    "Sure don't think I'm going there...",
+    "Did Silly Confuse you?",
+    "Did you find Silly's Tricks?",
+    "Do you think... maybe you're missing something?",
+    "Do you think Silly's Tricks have something to do with the answer?",
+    "Have you heard any honks, lately?",
   ],
   checkMs: 300, // per letter while a wrong answer is "checked"
   clearMs: 250, // letters fading away afterwards

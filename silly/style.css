@@ -128,10 +128,14 @@ body {
 
 /* ---------- Answer box ---------- */
 
+#answer-header {
+  margin: 15vh 0 16px;
+  text-align: center;
+}
+
 #answer-form {
   display: flex;
   gap: 8px;
-  margin-top: 15vh;
 }
 
 #answer-form input,
