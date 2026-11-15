@@ -10,7 +10,7 @@
 // wrongMessages: shown one per wrong answer, in order, then loops.
 const ANSWER = {
   correct: "rome",
-  correctMessage: "That's it!",
+  correctMessage: "Back to Italy? I'm on it, but you still owe me after the fiasco in Milan!",
   hints: {
     eomr: "Hmm... pretty close, but I think you missed a step",
   },
@@ -24,11 +24,27 @@ const ANSWER = {
     "Have you heard any honks, lately?",
   ],
   checkMs: 300, // per letter while a wrong answer is "checked"
+  revealDelayMs: 5000, // correct answer: how long correctMessage shows
+  fadeMs: 400,         // header and box fading out
+  dropMs: 1200,        // the final letter dropping onto the page
   clearMs: 250, // letters fading away afterwards
+  cheerMs: 700, // correct answer: box glowing green after the letters
 };
 
-// Called when the correct answer is entered. The big reveal goes here.
-function onCorrect() {}
+// Correct answer: the header and box fade out, and the final letter
+// (#final-letter in index.html) drops onto the page.
+async function onCorrect() {
+  const page = document.getElementById("answer");
+  await wait(ANSWER.revealDelayMs);
+
+  page.classList.add("fading");
+  await wait(ANSWER.fadeMs);
+
+  page.classList.add("solved", "letter-page");
+  page.scrollTop = 0;
+  document.getElementById("final-letter").hidden = false;
+  await wait(ANSWER.dropMs);
+}
 
 // ============================================================
 // Box
@@ -48,12 +64,9 @@ function setLocked(locked) {
   answerButton.disabled = locked;
 }
 
-// Wrong answer: each letter is checked in turn, the box shakes, then
-// the letters clear. The box stays locked until it's over.
-async function wrong() {
-  setLocked(true);
-  answerMessage.textContent = "";
-
+// Show the guess as separate letters over the input, then mark each in
+// turn as "right" (green) or "wrong" (red).
+async function checkLetters(result) {
   const style = getComputedStyle(answerInput);
   answerLetters.style.font = style.font;
   answerLetters.style.letterSpacing = style.letterSpacing;
@@ -68,9 +81,17 @@ async function wrong() {
   answerForm.classList.add("checking");
 
   for (const span of answerLetters.children) {
-    span.classList.add("checked");
+    span.classList.add("checked", result);
     await wait(ANSWER.checkMs);
   }
+}
+
+// Wrong answer: each letter is checked, the box shakes, then the letters
+// clear. The box stays locked until it's over.
+async function wrong() {
+  setLocked(true);
+  answerMessage.textContent = "";
+  await checkLetters("wrong");
 
   replay(answerForm, "shake");
   await wait(TIMING.shake);
@@ -88,15 +109,27 @@ async function wrong() {
   if (activeAnswerPage) answerInput.focus();
 }
 
+// Right answer: each letter turns green, the box glows, then the message
+// shows and the final letter is revealed. The box stays locked.
+async function right() {
+  setLocked(true);
+  answerMessage.textContent = "";
+  await checkLetters("right");
+
+  replay(answerForm, "cheer");
+  await wait(ANSWER.cheerMs);
+
+  answerMessage.textContent = ANSWER.correctMessage;
+  await onCorrect();
+}
+
 answerForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const guess = normalize(answerInput.value);
   if (!guess || answerInput.disabled) return;
 
   if (guess === ANSWER.correct) {
-    answerMessage.textContent = ANSWER.correctMessage;
-    setLocked(true);
-    onCorrect();
+    right();
   } else if (Object.hasOwn(ANSWER.hints, guess)) {
     answerMessage.textContent = ANSWER.hints[guess];
   } else {
@@ -112,3 +145,6 @@ document.addEventListener("pagechange", (e) => {
 });
 
 document.documentElement.style.setProperty("--check-ms", `${ANSWER.checkMs}ms`);
+document.documentElement.style.setProperty("--cheer-ms", `${ANSWER.cheerMs}ms`);
+document.documentElement.style.setProperty("--answer-fade-ms", `${ANSWER.fadeMs}ms`);
+document.documentElement.style.setProperty("--answer-drop-ms", `${ANSWER.dropMs}ms`);

@@ -126,6 +126,25 @@ body {
   mix-blend-mode: multiply;
 }
 
+/* The second letter, revealed by the correct answer (answer.js). It lands
+   tilted the other way, like a second sheet tossed on the table. */
+.letter[hidden] { display: none; } /* .letter's display: flex would override hidden */
+
+#final-letter {
+  rotate: 1.5deg;
+  animation: letter-drop var(--answer-drop-ms) cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
+}
+@keyframes letter-drop {
+  from { transform: translateY(110vh) rotate(-12deg); }
+  to   { transform: none; }
+}
+
+#answer.fading > :not(#final-letter) {
+  opacity: 0;
+  transition: opacity var(--answer-fade-ms);
+}
+#answer.solved > :not(#final-letter) { display: none; }
+
 /* ---------- Answer box ---------- */
 
 #answer-header {
@@ -173,14 +192,19 @@ body {
   white-space: pre;
   pointer-events: none;
 }
-#answer-form.checking #answer-input { color: transparent; }
+#answer-form.checking #answer-input { color: transparent; opacity: 1; } /* not dimmed while locked */
 #answer-form.checking #answer-letters { display: flex; }
 
 #answer-letters span { display: inline-block; }
-#answer-letters span.checked {
-  color: #d64545;
-  animation: answer-check var(--check-ms) ease-out;
+#answer-letters span.checked { animation: answer-check var(--check-ms) ease-out; }
+#answer-letters span.wrong { color: #d64545; }
+#answer-letters span.right { color: var(--correct); }
+/* Right answer: the box glows green. */
+#answer-form.cheer #answer-input { animation: answer-cheer var(--cheer-ms) ease-out; }
+@keyframes answer-cheer {
+  40% { border-color: var(--correct); box-shadow: 0 0 0 6px rgba(106, 170, 100, 0.4); transform: scale(1.04); }
 }
+
 @keyframes answer-check {
   50% { transform: translateY(-25%) scale(1.15); }
 }
