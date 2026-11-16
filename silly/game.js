@@ -21,8 +21,8 @@ const TIMING = {
   pop: 100,           // tile bump when typing
   shake: 500,         // row shake for an invalid word
   vanish: 250,        // letters falling away after the shake
-  reveal: 500,        // one tile hopping + flipping
-  revealStagger: 320, // delay between tiles starting their reveal
+  reveal: 550,        // one tile hopping + flipping
+  revealStagger: 400, // delay between tiles starting their reveal
   flash: 900,         // one tile's win flash/jump
   flashStagger: 100,  // delay between tiles in the win wave
   toast: 1500,        // how long messages stay up
