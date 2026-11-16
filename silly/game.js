@@ -6,9 +6,9 @@
 // winMessage:    shown with the confetti
 const PUZZLES = [
   { answer: "GOOSE", specialColumn: 5, winMessage: "HONK HONK!" },
-  { answer: "HONKS", specialColumn: 2, winMessage: "Nice!" },
-  { answer: "MARKS", specialColumn: 1, winMessage: "Nice!" },
-  { answer: "TRUTH", specialColumn: 2, winMessage: "Nice!" },
+  { answer: "HONKS", specialColumn: 2, winMessage: "Goose can't fool you!" },
+  { answer: "MARKS", specialColumn: 1, winMessage: "Woah, must be your birthday!" },
+  { answer: "TRUTH", specialColumn: 2, winMessage: "SO VERY HONK" },
 ];
 
 // Answers always count as real words, even if words.js lacks them.
@@ -22,7 +22,7 @@ const TIMING = {
   shake: 500,         // row shake for an invalid word
   vanish: 250,        // letters falling away after the shake
   reveal: 500,        // one tile hopping + flipping
-  revealStagger: 300, // delay between tiles starting their reveal
+  revealStagger: 320, // delay between tiles starting their reveal
   flash: 900,         // one tile's win flash/jump
   flashStagger: 100,  // delay between tiles in the win wave
   toast: 1500,        // how long messages stay up
